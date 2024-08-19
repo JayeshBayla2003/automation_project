@@ -1,10 +1,15 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service 
-from selenium.webdriver.common.keys import Keys
 import time 
+from selenium.webdriver.common.keys import Keys
 
 service = Service('C:\\Users\\jayes\\Downloads\\chromedriver.exe')
 
+
+def clean_text(text):
+  """Extract only temprature from the text"""
+  output = float(text.split(": ") [1])
+  return output
 
 def get_driver():
 #Set options to make browsing easier
@@ -17,7 +22,7 @@ def get_driver():
   options.add_argument("disable-blink-features=AutomationControlled")
   
   driver = webdriver.Chrome(service = service,options = options)
-  driver.get("https://automated.pythonanywhere.com/login/")
+  driver.get("https://automated.pythonanywhere.com/")
   return driver
 
 def main():
@@ -27,7 +32,9 @@ def main():
   driver.find_element(by = "id", value = "id_password").send_keys("automatedautomated" + Keys.RETURN)
   time.sleep(2)
   driver.find_element(by="xpath", value= "/html/body/nav/div/a").click()
-  print(driver.current_url)
+  time.sleep(2)
+
+  text = driver.find_element(by ="xpath", value = "/html/body/div[1]/div/h1[2]").text
+  return clean_text(text)
 
 print(main())
-
